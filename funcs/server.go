@@ -6,18 +6,6 @@ import (
 	"net/http"
 )
 
-type Artists struct {
-	ID           int      `json:"id"`
-	Image        string   `json:"image"`
-	Name         string   `json:"name"`
-	Members      []string `json:"members"`
-	CreationDate int      `json:"creationDate"`
-	FirstAlbum   string   `json:"firstAlbum"`
-	Locations    string   `json:"locations"`
-	ConcertDates string   `json:"concertDates"`
-	Relations    string   `json:"relations"`
-}
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r) // 404
@@ -41,7 +29,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		RenderTemplate(w, "index.html", apiData)
+		excludeIDs := []int{11, 12, 21, 22, 49}
+		filtered := filterArtists(apiData, excludeIDs)
+		RenderTemplate(w, "index.html", filtered)
 		return
 	}
 }

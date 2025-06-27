@@ -4,16 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
     <title>Groupie-Tracker</title>
 </head>
 
 <body>
-    {{range .}}
     <h1>Main Page</h1>
+    {{range .}}
+    <p>ID: {{.ID}}</p>
     <p>Name: {{.Name}}</p>
     <img src="{{.Image}}" alt="{{.Name}}" width="300" />
-    <p>Name: {{.Members}}</p>
-    <a href="{{.Locations}}"></a>
+    <p>Members: {{.Members}}</p>
+    <p>Creation Date: {{.CreationDate}}</p>
+    <p>First Album: {{.FirstAlbum}}</p>
+    <a href="{{.Locations}}"> Locations</a>
+    <a href="{{.ConcertDates}}"> Concert Dates</a>
+    <a href="{{.Relations}}"> Relations</a>
+
+    <hr>
     {{end}}
 </body>
 
