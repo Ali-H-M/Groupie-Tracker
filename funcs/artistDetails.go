@@ -1,0 +1,78 @@
+package funcs
+
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+	"strings"
+)
+
+type LocationData struct {
+	ID        int      `json:"id"`
+	Locations []string `json:"locations"`
+	DatesURL  string   `json:"dates"`
+}
+
+type ArtistDetailPage struct {
+	Artist   Artists
+	Location LocationData
+}
+
+func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
+	idStr := strings.TrimPrefix(r.URL.Path, "/artists/")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid artist ID", http.StatusBadRequest)
+		return
+	}
+
+	// Fetch all artists
+	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+	if err != nil {
+		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	var artists []Artists
+	if err := json.NewDecoder(resp.Body).Decode(&artists); err != nil {
+		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
+		return
+	}
+
+	// Filter the artist
+	var selected Artists
+	found := false
+	for _, ar := range artists {
+		if ar.ID == id {
+			selected = ar
+			found = true
+			break
+		}
+	}
+	if !found {
+		http.NotFound(w, r)
+		return
+	}
+
+	// Get the location data (selected.Location is an API itself)
+	locResp, err := http.Get(selected.Locations)
+	if err != nil {
+		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
+		return
+	}
+	defer locResp.Body.Close()
+
+	var locData LocationData
+	if err := json.NewDecoder(locResp.Body).Decode(&locData); err != nil {
+		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
+		return
+	}
+
+	data := ArtistDetailPage{
+		Artist:   selected,
+		Location: locData,
+	}
+
+	RenderTemplate(w, "artist.html", data)
+}

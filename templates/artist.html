@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Artist.Name}} - Details</title>
+</head>
+
+<body>
+    <div class="card">
+        <h2>{{.Artist.Name}}</h2>
+        <img src="{{.Artist.Image}}" alt="{{.Artist.Name}}" width="300">
+
+        <h3>Members:</h3>
+        <p> {{.Artist.Members}}</p>
+
+        <h3>Locations:</h3>
+        <ul>
+            {{range .Location.Locations}}<li>{{.}}</li>{{end}}
+        </ul>
+
+        <p><a href="/">Back to Home</a></p>
+    </div>
+</body>
+
+</html>

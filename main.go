@@ -9,6 +9,8 @@ import (
 
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static")))) // To apply CSS
+
+	http.HandleFunc("/artists/", funcs.ArtistDetailHandler)
 	http.HandleFunc("/", funcs.Handler)
 
 	fmt.Println("Server running at http://localhost:8080")

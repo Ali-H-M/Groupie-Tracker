@@ -9,20 +9,25 @@
 </head>
 
 <body>
-    <h1>Main Page</h1>
-    {{range .}}
-    <p>ID: {{.ID}}</p>
-    <p>Name: {{.Name}}</p>
-    <img src="{{.Image}}" alt="{{.Name}}" width="300" />
-    <p>Members: {{.Members}}</p>
-    <p>Creation Date: {{.CreationDate}}</p>
-    <p>First Album: {{.FirstAlbum}}</p>
-    <a href="{{.Locations}}"> Locations</a>
-    <a href="{{.ConcertDates}}"> Concert Dates</a>
-    <a href="{{.Relations}}"> Relations</a>
 
-    <hr>
-    {{end}}
+    <h1>Main Page</h1>
+    <div class="cards-container">
+        {{range .}}
+        <div class="card">
+
+            <p>Name: {{.Name}}</p>
+            <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" />
+            <p>Members: {{.Members}}</p>
+            <p>Creation Date: {{.CreationDate}}</p>
+            <p>ID: {{.ID}}</p>
+            <p>First Album: {{.FirstAlbum}}</p>
+            <!-- <a href="{{.Locations}}">View Locations</a> -->
+            <a href="/artists/{{.ID}}">Locations Details</a>
+            <!-- <a href="{{.ConcertDates}}"> Concert Dates</a>
+            <a href="{{.Relations}}"> Relations</a> -->
+        </div>
+        {{end}}
+    </div>
 </body>
 
 </html>
