@@ -11,7 +11,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static")))) // To apply CSS
 
 	http.HandleFunc("/artists/", funcs.ArtistDetailHandler)
-	http.HandleFunc("/", funcs.Handler)
+	http.HandleFunc("/", funcs.RootHandler)
 
 	fmt.Println("Server running at http://localhost:8080")
 	fmt.Println("Press (crtl + c) to stop the program")

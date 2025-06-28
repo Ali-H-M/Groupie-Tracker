@@ -76,3 +76,31 @@ func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 
 	RenderTemplate(w, "artist.html", data)
 }
+
+func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.NotFound(w, r)
+		return
+	}
+
+	// Fetch all artists
+	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+	if err != nil {
+		http.Error(w, "Failed to fetch artists", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	var artists []Artists
+	if err := json.NewDecoder(resp.Body).Decode(&artists); err != nil {
+		http.Error(w, "Failed to parse artist data", http.StatusInternalServerError)
+		return
+	}
+
+	// Get search query from URL
+	query := r.URL.Query().Get("searchQuary")
+	// Call search function
+	filtered := SearchArtists(query, artists)
+
+	RenderTemplate(w, "index.html", filtered)
+}

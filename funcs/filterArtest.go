@@ -1,5 +1,9 @@
 package funcs
 
+import (
+	"strings"
+)
+
 type Artists struct {
 	ID           int      `json:"id"`
 	Image        string   `json:"image"`
@@ -13,7 +17,7 @@ type Artists struct {
 }
 
 // To remove unwanted API objects
-func filterArtists(artists []Artists, excludeIDs []int) []Artists {
+func FilterArtists(artists []Artists, excludeIDs []int) []Artists {
 	var result []Artists
 
 	for _, artist := range artists {
@@ -28,5 +32,23 @@ func filterArtists(artists []Artists, excludeIDs []int) []Artists {
 			result = append(result, artist)
 		}
 	}
+	return result
+}
+
+// Filters artists by name
+func SearchArtists(query string, data []Artists) []Artists {
+	var result []Artists
+
+	// If query is empty, return full list
+	if strings.TrimSpace(query) == "" {
+		return data
+	}
+
+	for _, artist := range data {
+		if strings.Contains(strings.ToLower(artist.Name), strings.ToLower(query)) {
+			result = append(result, artist)
+		}
+	}
+
 	return result
 }

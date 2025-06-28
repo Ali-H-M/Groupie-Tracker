@@ -11,6 +11,15 @@
 <body>
 
     <h1>Main Page</h1>
+
+    <form action="/" method="GET">
+        <div class="search">
+            <input type="text" name="searchQuary" placeholder="Search artist by name" />
+            <button type="submit" class="submit-btn">Search</button>
+            <a href="/" class="reset-btn">Reset</a>
+        </div>
+    </form>
+
     <div class="cards-container">
         {{range .}}
         <div class="card">

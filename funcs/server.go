@@ -30,9 +30,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		excludeIDs := []int{11, 12, 21, 22, 49}
-		filtered := filterArtists(apiData, excludeIDs)
+		filtered := FilterArtists(apiData, excludeIDs)
 		RenderTemplate(w, "index.html", filtered)
 		return
+	}
+}
+
+func RootHandler(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("searchQuary")
+	if query != "" {
+		ArtistSearchHandler(w, r) // call search handler
+	} else {
+		Handler(w, r) // call normal home handler
 	}
 }
 
