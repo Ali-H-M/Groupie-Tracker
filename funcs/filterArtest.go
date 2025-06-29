@@ -47,6 +47,13 @@ func SearchArtists(query string, data []Artists) []Artists {
 	for _, artist := range data {
 		if strings.Contains(strings.ToLower(artist.Name), strings.ToLower(query)) {
 			result = append(result, artist)
+			continue // Skip the member check to avoid duplication
+		}
+		for _, member := range artist.Members {
+			if strings.Contains(strings.ToLower(member), strings.ToLower(query)) {
+				result = append(result, artist)
+				break
+			}
 		}
 	}
 

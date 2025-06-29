@@ -20,6 +20,7 @@
         </div>
     </form>
 
+    {{if .}}
     <div class="cards-container">
         {{range .}}
         <div class="card">
@@ -37,6 +38,9 @@
         </div>
         {{end}}
     </div>
+    {{else}} <!-- If (result slice) is empty -->
+    <p style="text-align: center; font-weight: bold;">No results found</p>
+    {{end}}
 </body>
 
 </html>
