@@ -2,17 +2,28 @@ package funcs
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
+type Artists struct {
+	ID           int      `json:"id"`
+	Image        string   `json:"image"`
+	Name         string   `json:"name"`
+	Members      []string `json:"members"`
+	CreationDate int      `json:"creationDate"`
+	FirstAlbum   string   `json:"firstAlbum"`
+	Locations    string   `json:"locations"`
+	ConcertDates string   `json:"concertDates"`
+	Relations    string   `json:"relations"`
+}
 type LocationData struct {
 	ID        int      `json:"id"`
 	Locations []string `json:"locations"`
 	DatesURL  string   `json:"dates"`
 }
-
 type ArtistDetailPage struct {
 	Artist   Artists
 	Location LocationData
@@ -26,37 +37,22 @@ func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Fetch all artists
-	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+	artistAPI := fmt.Sprintf("https://groupietrackers.herokuapp.com/api/artists/%d", id)
+	resp, err := http.Get(artistAPI)
 	if err != nil {
 		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 
-	var artists []Artists
-	if err := json.NewDecoder(resp.Body).Decode(&artists); err != nil {
+	var artist Artists
+	if err := json.NewDecoder(resp.Body).Decode(&artist); err != nil {
 		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
 		return
 	}
 
-	// Filter the artist
-	var selected Artists
-	found := false
-	for _, ar := range artists {
-		if ar.ID == id {
-			selected = ar
-			found = true
-			break
-		}
-	}
-	if !found {
-		http.NotFound(w, r)
-		return
-	}
-
 	// Get the location data (selected.Location is an API itself)
-	locResp, err := http.Get(selected.Locations)
+	locResp, err := http.Get(artist.Locations)
 	if err != nil {
 		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
 		return
@@ -70,7 +66,7 @@ func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := ArtistDetailPage{
-		Artist:   selected,
+		Artist:   artist,
 		Location: locData,
 	}
 

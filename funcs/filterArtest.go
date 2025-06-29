@@ -4,18 +4,6 @@ import (
 	"strings"
 )
 
-type Artists struct {
-	ID           int      `json:"id"`
-	Image        string   `json:"image"`
-	Name         string   `json:"name"`
-	Members      []string `json:"members"`
-	CreationDate int      `json:"creationDate"`
-	FirstAlbum   string   `json:"firstAlbum"`
-	Locations    string   `json:"locations"`
-	ConcertDates string   `json:"concertDates"`
-	Relations    string   `json:"relations"`
-}
-
 // To remove unwanted API objects
 func FilterArtists(artists []Artists, excludeIDs []int) []Artists {
 	var result []Artists
