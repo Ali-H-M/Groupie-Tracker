@@ -6,6 +6,39 @@ body {
   background: linear-gradient(135deg, #ece9e6, #ffffff);
 }
 
+/* Nav bar */
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
+  background: #cfd8dc;
+}
+
+.homenav {
+  display: grid;
+  align-items: center;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+nav li {
+  padding-left: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #0d47a1;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+
 /* Title */
 h1 {
   text-align: center;
@@ -155,4 +188,23 @@ form {
 
 .card a:hover {
   background-color: #355778;
+}
+
+/* Footer styles */
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding doesn't cause overflow */
+  margin: 0 auto; /* Center the footer */
+}
+
+.footer p {
+  margin: 0;
+  word-wrap: break-word; /* Prevent any long words or unbreakable text */
 }
