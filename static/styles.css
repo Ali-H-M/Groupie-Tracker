@@ -1,9 +1,22 @@
 /* Global styles */
+html,
 body {
-  font-family: Arial, sans-serif;
+  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #ece9e6, #ffffff);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content wrapper */
+.main-content {
+  flex: 1;
 }
 
 /* Nav bar */
@@ -47,7 +60,8 @@ h1 {
 
 /* Search form wrapper */
 form {
-  max-width: 800px;
+  width: 90%;
+  max-width: 850px;
   margin: 0 auto 2rem;
   padding: 1.5rem;
   border-radius: 15px;
@@ -68,7 +82,7 @@ form {
 
 /* Search input */
 .search input[type="text"] {
-  flex: 1 1 300px;
+  flex: 1 1 350px;
   padding: 0.8rem 1rem;
   font-size: 1rem;
   border: 1px solid rgba(200, 200, 200, 0.4);
@@ -139,7 +153,9 @@ form {
   gap: 20px;
   padding: 20px;
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Card style */
@@ -154,6 +170,8 @@ form {
   align-items: center;
   text-align: center;
   transition: transform 0.2s;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .card:hover {
@@ -162,6 +180,7 @@ form {
 
 .card img {
   width: 100%;
+  max-width: 100%;
   max-height: 200px;
   object-fit: cover;
   border-radius: 6px;
@@ -195,14 +214,12 @@ form {
   color: white;
   text-align: center;
   padding: 20px;
-  position: relative;
-  bottom: 0;
   width: 100%;
   box-sizing: border-box;
-  margin: 0 auto;
+  margin-top: auto;
 }
 
 .footer p {
   margin: 0;
-  word-wrap: break-word; 
+  word-wrap: break-word;
 }
