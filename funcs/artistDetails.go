@@ -19,14 +19,15 @@ type Artists struct {
 	ConcertDates string   `json:"concertDates"`
 	Relations    string   `json:"relations"`
 }
-type LocationData struct {
-	ID        int      `json:"id"`
-	Locations []string `json:"locations"`
-	DatesURL  string   `json:"dates"`
+
+type RelationsData struct {
+	ID             int                 `json:"id"`
+	DatesLocations map[string][]string `json:"datesLocations"`
 }
-type ArtistDetailPage struct {
+
+type ArtistDetailPage2 struct {
 	Artist   Artists
-	Location LocationData
+	Relation RelationsData
 }
 
 func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,22 +53,22 @@ func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the location data (selected.Location is an API itself)
-	locResp, err := http.Get(artist.Locations)
+	relResp, err := http.Get(artist.Relations)
 	if err != nil {
 		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
 		return
 	}
-	defer locResp.Body.Close()
+	defer relResp.Body.Close()
 
-	var locData LocationData
-	if err := json.NewDecoder(locResp.Body).Decode(&locData); err != nil {
-		http.Error(w, "Failed to get artist data", http.StatusInternalServerError)
+	var relData RelationsData
+	if err := json.NewDecoder(relResp.Body).Decode(&relData); err != nil {
+		http.Error(w, "Failed to get artist relation data", http.StatusInternalServerError)
 		return
 	}
 
-	data := ArtistDetailPage{
+	data := ArtistDetailPage2{
 		Artist:   artist,
-		Location: locData,
+		Relation: relData,
 	}
 
 	RenderTemplate(w, "artist.html", data)
