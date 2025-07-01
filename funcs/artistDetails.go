@@ -30,6 +30,19 @@ type ArtistDetailPage struct {
 	Relation RelationsData
 }
 
+type ArtistsWithLocation struct {
+	Artist   []Artists
+	Location Locations
+}
+
+type Locations struct {
+	Index []struct {
+		ID        int      `json:"id"`
+		Locations []string `json:"locations"`
+		Dates     string   `json:"dates"`
+	} `json:"index"`
+}
+
 func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := strings.TrimPrefix(r.URL.Path, "/artists/")
 	id, err := strconv.Atoi(idStr)
@@ -48,7 +61,7 @@ func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 
 	var artist Artists
 	if err := json.NewDecoder(resp.Body).Decode(&artist); err != nil {
-		RenderTemplate(w, "error.html", nil)
+		http.Error(w, "Failed to get artist relation data", http.StatusInternalServerError)
 		return
 	}
 
@@ -100,10 +113,31 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Take form relations API
+	locResp, err := http.Get("https://groupietrackers.herokuapp.com/api/locations")
+	if err != nil || locResp.StatusCode != http.StatusOK {
+		RenderTemplate(w, "error.html", nil)
+		return
+	}
+	defer locResp.Body.Close()
+
+	var location Locations
+	if err := json.NewDecoder(locResp.Body).Decode(&location); err != nil {
+		http.Error(w, "Failed to fetch Locations", http.StatusInternalServerError)
+		return
+	}
+
+	data := ArtistsWithLocation{
+		Artist:   artists,
+		Location: location,
+	}
+
 	// Get search query from URL
 	query := r.URL.Query().Get("searchQuary")
 	// Call search function
-	filtered := SearchArtists(query, artists)
+	filtered := SearchArtists(query, data)
+	// Remove unwanted objects
+	filtered = FilterArtists(filtered, ExcludeIDs)
 
 	RenderTemplate(w, "index.html", filtered)
 }

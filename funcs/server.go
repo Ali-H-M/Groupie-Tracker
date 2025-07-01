@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+var ExcludeIDs = []int{11, 12, 21, 22, 49}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.NotFound(w, r)
@@ -27,8 +29,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	excludeIDs := []int{11, 12, 21, 22, 49}
-	filtered := FilterArtists(apiData, excludeIDs)
+	filtered := FilterArtists(apiData, ExcludeIDs)
 	RenderTemplate(w, "index.html", filtered)
 }
 

@@ -24,25 +24,25 @@ func FilterArtists(artists []Artists, excludeIDs []int) []Artists {
 	return result
 }
 
-// Filters artists by name
-func SearchArtists(query string, data []Artists) []Artists {
+func SearchArtists(query string, data ArtistsWithLocation) []Artists {
 	var result []Artists
+	query = strings.ToLower(strings.TrimSpace(query))
 
 	// If query is empty, return full list
-	if strings.TrimSpace(query) == "" {
-		return data
+	if query == "" {
+		return data.Artist
 	}
 
-	for _, artist := range data {
+	for _, artist := range data.Artist {
 		// Search in artist name
-		if strings.Contains(artist.Name, query) {
+		if strings.Contains(strings.ToLower(artist.Name), query) {
 			result = append(result, artist)
-			continue // Skip the member check to avoid duplication
+			continue
 		}
 
+		// Search in members
 		for _, member := range artist.Members {
-			// Search in members
-			if strings.Contains(member, query) {
+			if strings.Contains(strings.ToLower(member), query) {
 				result = append(result, artist)
 				break
 			}
@@ -59,9 +59,21 @@ func SearchArtists(query string, data []Artists) []Artists {
 			result = append(result, artist)
 			continue
 		}
+	}
 
-		// TODO: Search by locations
-	
+	// Search by location (match with artist ID)
+	for _, temp := range data.Location.Index {
+		for _, loc := range temp.Locations {
+			if strings.Contains(strings.ToLower(loc), query) {
+				for _, artist := range data.Artist {
+					if artist.ID == temp.ID {
+						result = append(result, artist)
+						break
+					}
+				}
+				break
+			}
+		}
 	}
 
 	return result
