@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
 var ExcludeIDs = []int{11, 12, 21, 22, 49}
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusNotFound)
 		http.NotFound(w, r)
 		return
 	}
@@ -35,6 +37,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
+		w.WriteHeader(http.StatusNotFound)
 		RenderTemplate(w, "error.html", nil)
 		return
 	}
@@ -48,7 +51,12 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
-	t, err := template.ParseFiles("templates/" + tmpl)
+
+	joinMembersList := template.FuncMap{
+		"join": strings.Join,
+	}
+
+	t, err := template.New(tmpl).Funcs(joinMembersList).ParseFiles("templates/" + tmpl)
 	if err != nil {
 		// Render custom 404 page
 		w.WriteHeader(http.StatusNotFound)

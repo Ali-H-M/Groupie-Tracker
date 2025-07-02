@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="/static/styles.css">
     <title>Groupie-Tracker</title>
 </head>
@@ -32,17 +33,24 @@
     <div class="cards-container">
         {{range .}}
         <div class="card">
+            <div class="card-img">
+                <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" />
+            </div>
 
-            <p>Name: {{.Name}}</p>
-            <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" />
-            <p>Members: {{.Members}}</p>
-            <p>Creation Date: {{.CreationDate}}</p>
-            <p>ID: {{.ID}}</p>
-            <p>First Album: {{.FirstAlbum}}</p>
-            <a href="/artists/{{.ID}}">Locations Details</a>
+            <div class="card-info">
+                <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
+                <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
+                <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
+                <!-- <div class="field"><label>ID:</label><span>{{.ID}}</span></div> -->
+                <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
+            </div>
 
+            <div class="card-footer">
+                <a href="/artists/{{.ID}}">Locations Details</a>
+            </div>
         </div>
         {{end}}
+
     </div>
     {{else}} <!-- If (result slice) is empty -->
     <p style="text-align: center; font-weight: bold;">No results found</p>
