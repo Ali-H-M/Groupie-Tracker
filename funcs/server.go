@@ -42,11 +42,24 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Query parameter check
+	for key := range r.URL.Query() {
+		if key != "searchQuary" {
+			w.WriteHeader(http.StatusBadRequest)
+			RenderTemplate(w, "error.html", nil)
+			return
+		}
+	}
+
 	query := r.URL.Query().Get("searchQuary")
+
 	if query != "" {
-		ArtistSearchHandler(w, r) // call search handler
+		ArtistSearchHandler(w, r) //  Valid query
+	} else if _, ok := r.URL.Query()["searchQuary"]; ok {
+		w.WriteHeader(http.StatusBadRequest) // searchQuary is present but empty
+		Handler(w, r)
 	} else {
-		Handler(w, r) // call normal home handler
+		Handler(w, r) // No searchQuary param at all: (load normal home page)
 	}
 }
 
@@ -66,6 +79,10 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
 	}
 	err = t.Execute(w, data)
 	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError) // Template execution fails 500
+		// Template execution error
+		w.WriteHeader(http.StatusInternalServerError)
+		t500, _ := template.ParseFiles("templates/error.html")
+		t500.Execute(w, nil)
+		return
 	}
 }

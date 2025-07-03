@@ -47,13 +47,15 @@ func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := strings.TrimPrefix(r.URL.Path, "/artists/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid artist ID", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		RenderTemplate(w, "error.html", nil)
 		return
 	}
 
 	artistAPI := fmt.Sprintf("https://groupietrackers.herokuapp.com/api/artists/%d", id)
 	resp, err := http.Get(artistAPI)
 	if err != nil || resp.StatusCode != http.StatusOK {
+		w.WriteHeader(http.StatusNotFound)
 		RenderTemplate(w, "error.html", nil)
 		return
 	}
@@ -68,6 +70,7 @@ func ArtistDetailHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the location data (selected.Location is an API itself)
 	relResp, err := http.Get(artist.Relations)
 	if err != nil || relResp.StatusCode != http.StatusOK {
+		w.WriteHeader(http.StatusNotFound)
 		RenderTemplate(w, "error.html", nil)
 		return
 	}
@@ -116,6 +119,7 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 	// Take form relations API
 	locResp, err := http.Get("https://groupietrackers.herokuapp.com/api/locations")
 	if err != nil || locResp.StatusCode != http.StatusOK {
+		w.WriteHeader(http.StatusNotFound)
 		RenderTemplate(w, "error.html", nil)
 		return
 	}
