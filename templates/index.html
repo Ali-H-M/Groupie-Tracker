@@ -10,6 +10,7 @@
 </head>
 
 <body>
+
     <nav>
         <a class="homenav" href="/">Home</a>
         <ul>
@@ -19,46 +20,47 @@
         </ul>
     </nav>
 
-    <h1>Main Page</h1>
+    <h1>Home Page</h1>
 
     <form action="/" method="GET">
         <div class="search">
-            <input type="text" name="searchQuary" placeholder="Search artist by name" autocomplete="off" />
+            <input type="text" name="searchQuary" placeholder="Search artist.." autocomplete="off" />
             <button type="submit" class="submit-btn">Search</button>
             <a href="/" class="reset-btn">Reset</a>
         </div>
     </form>
 
-    {{if .}}
-    <div class="cards-container">
-        {{range .}}
-        <div class="card">
-            <div class="card-img">
-                <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" />
-            </div>
+    <div class="main-wrapper"> <!-- This div is temp, (fix the issue of footer
+        "to push it to the end of the page when content is short" )  -->
+        {{if .}}
+        <div class="cards-container">
+            {{range .}}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" />
+                </div>
 
-            <div class="card-info">
-                <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
-                <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
-                <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
-                <!-- <div class="field"><label>ID:</label><span>{{.ID}}</span></div> -->
-                <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
+                <div class="card-info">
+                    <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
+                    <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
+                    <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
+                    <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
+                    <a href="/artists/{{.ID}}" class="location-details-btn">Location Details</a>
+                </div>
             </div>
-
-            <div class="card-footer">
-                <a href="/artists/{{.ID}}">Locations Details</a>
-            </div>
+            {{end}}
         </div>
+
+        {{else}} <!-- If (result slice) is empty -->
+        <p class="no-result-title" style="text-align: center; font-weight: bold;">No results found</p>
         {{end}}
 
-    </div>
-    {{else}} <!-- If (result slice) is empty -->
-    <p style="text-align: center; font-weight: bold;">No results found</p>
-    {{end}}
+        <footer class="footer">
+            <p>&copy; 2025 All rights reserved.</p>
+        </footer>
 
-    <footer class="footer">
-        <p>&copy; 2025 All rights reserved.</p>
-    </footer>
+    </div>
+
 </body>
 
 </html>
