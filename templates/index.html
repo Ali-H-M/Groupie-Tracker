@@ -10,48 +10,50 @@
 </head>
 
 <body>
+    <div class="main-content">
 
-    <nav>
-        <a class="homenav" href="/">Home</a>
-        <ul>
-            <li><a href="#">Item 1</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="#">Item 3</a></li>
-        </ul>
-    </nav>
+        <nav>
+            <a class="homenav" href="/">Home</a>
+            <ul>
+                <li><a href="#">Item 1</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Item 3</a></li>
+            </ul>
+        </nav>
 
-    <h1>Home Page</h1>
+        <h1>Home Page</h1>
 
-    <form action="/" method="GET">
-        <div class="search">
-            <input type="text" name="searchQuary" placeholder="Search artist.." autocomplete="off" />
-            <button type="submit" class="submit-btn">Search</button>
-            <a href="/" class="reset-btn">Reset</a>
-        </div>
-    </form>
-
-    {{if .}}
-    <div class="cards-container">
-        {{range .}}
-        <div class="card">
-            <div class="card-img">
-                <img src="{{.Image}}" loading="lazy" />
+        <form action="/" method="GET">
+            <div class="search">
+                <input type="text" name="searchQuary" placeholder="Search artist.." autocomplete="off" />
+                <button type="submit" class="submit-btn">Search</button>
+                <a href="/" class="reset-btn">Reset</a>
             </div>
+        </form>
 
-            <div class="card-info">
-                <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
-                <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
-                <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
-                <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
-                <a href="/artists/{{.ID}}" class="location-details-btn">Location Details</a>
+        {{if .}}
+        <div class="cards-container">
+            {{range .}}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{.Image}}" loading="lazy" />
+                </div>
+
+                <div class="card-info">
+                    <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
+                    <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
+                    <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
+                    <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
+                    <a href="/artists/{{.ID}}" class="location-details-btn">Location Details</a>
+                </div>
             </div>
+            {{end}}
         </div>
+
+        {{else}} <!-- If (result slice) is empty -->
+        <p class="no-result-title" style="text-align: center; font-weight: bold;">No results found</p>
         {{end}}
     </div>
-
-    {{else}} <!-- If (result slice) is empty -->
-    <p class="no-result-title" style="text-align: center; font-weight: bold;">No results found</p>
-    {{end}}
 
     <footer class="footer">
         <p>&copy; 2025 All rights reserved.</p>

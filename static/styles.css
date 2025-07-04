@@ -7,6 +7,12 @@ body {
   margin: 0;
   font-family: system-ui, sans-serif;
   background-color: #111827;
+  font-family: system-ui, sans-serif;
+  background-color: #111827;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
 }
 
 html,
@@ -296,15 +302,13 @@ form {
 
 /* Footer styles */
 .footer {
-  position: absolute;
-  bottom: 0;
   background-color: #333;
   color: white;
   text-align: center;
   padding: 20px;
   width: 100%;
   box-sizing: border-box;
-  /* margin-top: auto; */
+  margin-top: auto;
 }
 
 .footer p {
