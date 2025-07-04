@@ -30,36 +30,32 @@
         </div>
     </form>
 
-    <div class="main-wrapper"> <!-- This div is temp, (fix the issue of footer
-        "to push it to the end of the page when content is short" )  -->
-        {{if .}}
-        <div class="cards-container">
-            {{range .}}
-            <div class="card">
-                <div class="card-img">
-                    <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" />
-                </div>
-
-                <div class="card-info">
-                    <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
-                    <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
-                    <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
-                    <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
-                    <a href="/artists/{{.ID}}" class="location-details-btn">Location Details</a>
-                </div>
+    {{if .}}
+    <div class="cards-container">
+        {{range .}}
+        <div class="card">
+            <div class="card-img">
+                <img src="{{.Image}}" loading="lazy" />
             </div>
-            {{end}}
+
+            <div class="card-info">
+                <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
+                <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
+                <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
+                <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
+                <a href="/artists/{{.ID}}" class="location-details-btn">Location Details</a>
+            </div>
         </div>
-
-        {{else}} <!-- If (result slice) is empty -->
-        <p class="no-result-title" style="text-align: center; font-weight: bold;">No results found</p>
         {{end}}
-
-        <footer class="footer">
-            <p>&copy; 2025 All rights reserved.</p>
-        </footer>
-
     </div>
+
+    {{else}} <!-- If (result slice) is empty -->
+    <p class="no-result-title" style="text-align: center; font-weight: bold;">No results found</p>
+    {{end}}
+
+    <footer class="footer">
+        <p>&copy; 2025 All rights reserved.</p>
+    </footer>
 
 </body>
 

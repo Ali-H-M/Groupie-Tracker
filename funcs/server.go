@@ -51,11 +51,11 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	query := r.URL.Query().Get("searchQuary")
+	query, ok := r.URL.Query()["searchQuary"]
 
-	if query != "" {
+	if ok && strings.TrimSpace(query[0]) != "" {
 		ArtistSearchHandler(w, r) //  Valid query
-	} else if _, ok := r.URL.Query()["searchQuary"]; ok {
+	} else if ok && strings.TrimSpace(query[0]) == "" {
 		w.WriteHeader(http.StatusBadRequest) // searchQuary is present but empty
 		Handler(w, r)
 	} else {

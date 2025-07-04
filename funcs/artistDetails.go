@@ -140,6 +140,12 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("searchQuary")
 	// Call search function
 	filtered := SearchArtists(query, data)
+
+	// When nothing match user quary search
+	if len(filtered) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
 	// Remove unwanted objects
 	filtered = FilterArtists(filtered, ExcludeIDs)
 
