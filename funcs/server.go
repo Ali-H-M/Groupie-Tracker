@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-var ExcludeIDs = []int{11, 12, 21, 22, 49}
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusNotFound)
@@ -32,7 +30,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	filtered := FilterArtists(apiData, ExcludeIDs)
-	RenderTemplate(w, "index.html", filtered)
+
+	homeData := PageData{
+		Artist: filtered,
+	}
+
+	RenderTemplate(w, "index.html", homeData)
 }
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,25 +45,24 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Query parameter check
+	// Get query parameters
+	queryParams := r.URL.Query()
+	if len(queryParams) == 0 {
+		Handler(w, r)
+		return
+	}
+
+	// Check if query parameters is allowed
 	for key := range r.URL.Query() {
-		if key != "searchQuary" {
+		if !validQueries[key] {
 			w.WriteHeader(http.StatusBadRequest)
 			RenderTemplate(w, "error.html", nil)
 			return
 		}
 	}
 
-	// Handle search querys
-	query, ok := r.URL.Query()["searchQuary"]
-	if ok && len(query) > 0 && strings.TrimSpace(query[0]) != "" {
-		ArtistSearchHandler(w, r) //  Valid query
-	} else if ok && len(query) > 0 && strings.TrimSpace(query[0]) == "" {
-		w.WriteHeader(http.StatusBadRequest) // searchQuary is present but empty
-		Handler(w, r)
-	} else {
-		Handler(w, r) // No searchQuary param at all: (load normal home page)
-	}
+	// Handle search queries if they exist
+	HandleQueries(w, r)
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {

@@ -24,14 +24,9 @@ func FilterArtists(artists []Artists, excludeIDs []int) []Artists {
 	return result
 }
 
-func SearchArtists(query string, data ArtistsWithLocation) []Artists {
+func SearchArtists(query string, data PageData) []Artists {
 	var result []Artists
 	query = strings.ToLower(strings.TrimSpace(query))
-
-	// If query is empty, return full list
-	// if query == "" {
-	// 	return data.Artist
-	// }
 
 	for _, artist := range data.Artist {
 		// Search in artist name
