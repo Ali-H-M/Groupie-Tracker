@@ -25,7 +25,13 @@
 
         <form action="/" method="GET">
             <div class="search">
-                <input type="text" name="searchQuary" placeholder="Search artist.." autocomplete="off" />
+                <input type="text" name="searchQuary" placeholder="Search artist.." list="autocomplete" />
+                <datalist id="autocomplete">
+                    {{range .Suggestions}}
+                    <option value="{{.Value}}" label="{{.Label}}">
+                        {{end}}
+                </datalist>
+
                 <button type="submit" class="submit-btn">Search</button>
                 <a href="/" class="reset-btn">Reset</a>
             </div>

@@ -34,16 +34,20 @@ type Locations struct {
 	} `json:"index"`
 }
 
+type Suggestion struct {
+	Value string
+	Label string
+}
 type PageData struct {
-	Artist   []Artists
-	Location Locations
-	// Suggestions []string
-	Page       int
-	TotalPages int
-	HasNext    bool
-	HasPrev    bool
-	NextPage   int
-	PrevPage   int
+	Artist      []Artists
+	Location    Locations
+	Suggestions []Suggestion
+	Page        int
+	TotalPages  int
+	HasNext     bool
+	HasPrev     bool
+	NextPage    int
+	PrevPage    int
 }
 
 // Allowed query parameters

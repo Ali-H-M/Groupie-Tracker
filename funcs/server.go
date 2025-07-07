@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -31,18 +32,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	filtered := FilterArtists(apiData, ExcludeIDs)
 
-	// -----------Pagentation Logic Start---------------
+	// Pagentation Logic
 	homeData, ok := Pagentation(r, filtered, Items_Per_Page)
 	if !ok { // Invalid page number
 		w.WriteHeader(http.StatusNotFound)
 		RenderTemplate(w, "error.html", nil)
 		return
 	}
-	// -----------Pagentation Logic End-----------------
 
-	// homeData := PageData{
-	// 	Artist: filtered,
-	// }
+	// Auto Complete logic
+	var suggestions []Suggestion
+	for _, art := range filtered {
+		suggestions = append(suggestions, Suggestion{Value: art.Name, Label: art.Name + " - Name"})
+		suggestions = append(suggestions, Suggestion{Value: strconv.Itoa(art.CreationDate), Label: strconv.Itoa(art.CreationDate) + " - Creation Date"})
+		suggestions = append(suggestions, Suggestion{Value: art.FirstAlbum, Label: art.FirstAlbum + " - First Album"})
+
+		for _, m := range art.Members {
+			suggestions = append(suggestions, Suggestion{Value: m, Label: m + " - Member"})
+		}
+	}
+
+	homeData.Suggestions = suggestions
 
 	RenderTemplate(w, "index.html", homeData)
 }
