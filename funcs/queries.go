@@ -3,6 +3,7 @@ package funcs
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -76,4 +77,40 @@ func HandleQueries(w http.ResponseWriter, r *http.Request) {
 	}
 
 	Handler(w, r) // No searchQuary param at all: (load normal home page)
+}
+
+func Pagentation(r *http.Request, items []Artists, itemsPerPage int) (PageData, bool) {
+	pageStr := r.URL.Query().Get("page")
+	page := 1
+
+	if pageStr != "" {
+		p, err := strconv.Atoi(pageStr)
+		if err != nil || p < 1 {
+			return PageData{}, false // invalid query
+		}
+		page = p
+	}
+
+	totalItems := len(items)
+	totalPages := (totalItems + itemsPerPage - 1) / itemsPerPage
+
+	if page > totalPages {
+		return PageData{}, false // page not found
+	}
+
+	start := (page - 1) * itemsPerPage // Calculate the first item (index) in the page
+	end := start + itemsPerPage
+	if end > totalItems { // When cant fill the hole page
+		end = totalItems
+	}
+
+	return PageData{
+		Artist:     items[start:end],
+		Page:       page,
+		TotalPages: totalPages,
+		HasNext:    page < totalPages,
+		HasPrev:    page > 1,
+		NextPage:   page + 1,
+		PrevPage:   page - 1,
+	}, true
 }

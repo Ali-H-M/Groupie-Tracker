@@ -31,9 +31,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	filtered := FilterArtists(apiData, ExcludeIDs)
 
-	homeData := PageData{
-		Artist: filtered,
+	// -----------Pagentation Logic Start---------------
+	homeData, ok := Pagentation(r, filtered, Items_Per_Page)
+	if !ok { // Invalid page number
+		w.WriteHeader(http.StatusNotFound)
+		RenderTemplate(w, "error.html", nil)
+		return
 	}
+	// -----------Pagentation Logic End-----------------
+
+	// homeData := PageData{
+	// 	Artist: filtered,
+	// }
 
 	RenderTemplate(w, "index.html", homeData)
 }

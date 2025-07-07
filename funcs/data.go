@@ -2,6 +2,8 @@ package funcs
 
 var ExcludeIDs = []int{11, 12, 21, 22, 49}
 
+const Items_Per_Page = 20
+
 type Artists struct {
 	ID           int      `json:"id"`
 	Image        string   `json:"image"`
@@ -36,10 +38,16 @@ type PageData struct {
 	Artist   []Artists
 	Location Locations
 	// Suggestions []string
+	Page       int
+	TotalPages int
+	HasNext    bool
+	HasPrev    bool
+	NextPage   int
+	PrevPage   int
 }
 
 // Allowed query parameters
 var validQueries = map[string]bool{
 	"searchQuary": true,
-	// "page":        true, // (Not yet implemented)
+	"page":        true,
 }

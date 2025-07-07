@@ -55,6 +55,19 @@
         {{end}}
     </div>
 
+    <!-- pagentation logic -->
+    <div class="pagination">
+        {{if .HasPrev}}
+        <a href="/?page={{.PrevPage}}">&larr; Previous</a>
+        {{end}}
+
+        <span>Page {{.Page}} of {{.TotalPages}}</span>
+
+        {{if .HasNext}}
+        <a href="/?page={{.NextPage}}">Next &rarr;</a>
+        {{end}}
+    </div>
+
     <footer class="footer">
         <p>&copy; 2025 All rights reserved.</p>
     </footer>
