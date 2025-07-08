@@ -61,6 +61,11 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 	filtered = FilterArtists(filtered, ExcludeIDs)
 	data.Artist = filtered
 
+	// Auto Complete logic
+	artistsCopy := FilterArtists(artists, ExcludeIDs)
+	suggestions := AutoComplete(artistsCopy)
+	data.Suggestions = suggestions
+
 	RenderTemplate(w, "index.html", data)
 }
 
@@ -113,4 +118,18 @@ func Pagentation(r *http.Request, items []Artists, itemsPerPage int) (PageData, 
 		NextPage:   page + 1,
 		PrevPage:   page - 1,
 	}, true
+}
+
+func AutoComplete(filtered []Artists) []Suggestion {
+	var suggestions []Suggestion
+	for _, art := range filtered {
+		suggestions = append(suggestions, Suggestion{Value: art.Name, Label: art.Name + " - Name"})
+		suggestions = append(suggestions, Suggestion{Value: strconv.Itoa(art.CreationDate), Label: strconv.Itoa(art.CreationDate) + " - Creation Date"})
+		suggestions = append(suggestions, Suggestion{Value: art.FirstAlbum, Label: art.FirstAlbum + " - First Album"})
+
+		for _, m := range art.Members {
+			suggestions = append(suggestions, Suggestion{Value: m, Label: m + " - Member"})
+		}
+	}
+	return suggestions
 }
