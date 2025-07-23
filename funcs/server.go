@@ -35,7 +35,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	homeData, ok := Pagentation(r, filtered, Items_Per_Page)
 	if !ok { // Invalid page number
 		w.WriteHeader(http.StatusNotFound)
-		RenderTemplate(w, "error.html", nil)
+		RenderTemplate(w, "error.html", ErrorData{ErrorName: "404 Page not found", ErrorCode: 404})
 		return
 	}
 
@@ -49,7 +49,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		w.WriteHeader(http.StatusNotFound)
-		RenderTemplate(w, "error.html", nil)
+		RenderTemplate(w, "error.html", ErrorData{ErrorName: "404 Page not found", ErrorCode: 404})
 		return
 	}
 
@@ -64,7 +64,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	for key := range r.URL.Query() {
 		if !validQueries[key] {
 			w.WriteHeader(http.StatusBadRequest)
-			RenderTemplate(w, "error.html", nil)
+			RenderTemplate(w, "error.html", ErrorData{ErrorName: "400 Bad Request", ErrorCode: 400})
 			return
 		}
 	}
@@ -82,17 +82,17 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
 	t, err := template.New(tmpl).Funcs(joinMembersList).ParseFiles("templates/" + tmpl)
 	if err != nil {
 		// Render custom 404 page
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusInternalServerError)
 		t404, _ := template.ParseFiles("templates/error.html")
-		t404.Execute(w, nil)
+		t404.Execute(w, ErrorData{ErrorName: "500 Internal Server Error", ErrorCode: 500})
 		return
 	}
 	err = t.Execute(w, data)
 	if err != nil {
 		// Template execution error
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusNotFound)
 		t500, _ := template.ParseFiles("templates/error.html")
-		t500.Execute(w, nil)
+		t500.Execute(w, ErrorData{ErrorName: "404 Page not found", ErrorCode: 400})
 		return
 	}
 }

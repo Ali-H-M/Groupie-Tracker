@@ -55,3 +55,8 @@ var validQueries = map[string]bool{
 	"searchQuary": true,
 	"page":        true,
 }
+
+type ErrorData struct {
+	ErrorName string
+	ErrorCode int
+}
