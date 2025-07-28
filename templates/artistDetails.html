@@ -4,38 +4,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
     <title>{{.Artist.Name}} - Details</title>
+    <link rel="stylesheet" href="/static/artist_details.css">
 </head>
 
 <body>
-    <div class="card">
-        <h2>{{.Artist.Name}}</h2>
-        <img src="{{.Artist.Image}}" alt="{{.Artist.Name}}" width="300">
 
-        <h3>Members:</h3>
-        <p> {{.Artist.Members}}</p>
+    <nav>
+        <a class="homenav" href="/">Home</a>
+        <ul>
+            <li><a href="#">Item 1</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="#">Item 3</a></li>
+        </ul>
+    </nav>
 
-        <h3>Locations:</h3>
-        <h2 class="tour-title">Tour Locations & Dates</h2>
-        {{if .Relation.DatesLocations}}
-        <div class="tour-list">
-            {{range $location, $dates := .Relation.DatesLocations}}
-            <div class="tour-location">
-                <h3 class="location-name">{{$location}}</h3>
-                <ul class="dates-list">
-                    {{range $dates}}
-                    <li class="date-item">{{.}}</li>
-                    {{end}}
-                </ul>
+
+    <main>
+
+        <div class="artist-card">
+            <div class="artist-header">
+                <div class="artist-image-container">
+                    <img src="{{.Artist.Image}}" class="artist-image" />
+                </div>
+                <div class="artist-info-section">
+                    <h1 class="artist-name">{{.Artist.Name}}</h1>
+                    <div class="artist-meta">
+                        <div class="meta-item"><strong>Creation Date:</strong> {{.Artist.CreationDate}}</div>
+                        <div class="meta-item"><strong>Firs Album:</strong> {{.Artist.FirstAlbum}}</div>
+                    </div>
+                </div>
             </div>
-            {{end}}
-        </div>
-        {{else}}
-        <p class="no-tour">No tour information available.</p>
-        {{end}}
 
-        <p><a href="/">Back to Home</a></p>
-    </div>
+            <p class="artist-members"><strong>Members:</strong> {{join .Artist.Members ", "}}</p>
+
+            <div class="tour-section">
+                <h2 class="tour-title">Tour Locations & Dates</h2>
+                {{if .Relation.DatesLocations}}
+                <div class="tour-list">
+                    {{range $location, $dates := .Relation.DatesLocations}}
+                    <div class="tour-location">
+                        <h3 class="location-name">{{$location}}</h3>
+                        <ul class="dates-list">
+                            {{range $dates}}
+                            <li class="date-item">{{.}}</li>
+                            {{end}}
+                        </ul>
+                    </div>
+                    {{end}}
+                </div>
+                {{else}}
+                <p class="no-tour">No tour information available.</p>
+                {{end}}
+            </div>
+
+            <a href="/" class="back-button">← Back to Artists</a>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 All rights reserved.</p>
+    </footer>
+
 </body>
 
 </html>
