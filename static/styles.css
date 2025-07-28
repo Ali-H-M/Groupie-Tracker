@@ -47,6 +47,7 @@ nav li {
 }
 
 nav a {
+  padding: 3px;
   text-decoration: none;
   color: #bcbcbc;
 }
@@ -57,7 +58,7 @@ nav a {
 }
 
 li a:hover {
-  background-color: #111;
+  background-color: #4e4b4b;
 }
 
 /* Title */
