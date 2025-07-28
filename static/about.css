@@ -1,0 +1,103 @@
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #111827;
+  font-family: system-ui, sans-serif;
+  background-color: #111827;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+html,
+body {
+  /* display: flex; */
+  height: 100%;
+  overflow-x: hidden;
+  width: 100%;
+  /* flex-direction: column; Stack children vertically */
+}
+
+.main-content {
+  flex: 1; /* This makes the content area take up all available space */
+}
+
+/* Nav bar */
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
+  background-color: #1f2937;
+  border-bottom: solid 1px #374151;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+nav li {
+  padding-left: 1rem;
+}
+
+nav a {
+  padding: 3px;
+  text-decoration: none;
+  color: #bcbcbc;
+}
+
+.homenav {
+  display: grid;
+  align-items: center;
+}
+
+li a:hover {
+  background-color: #4e4b4b;
+}
+
+.about {
+    color: white;
+    font-weight: bold;
+}
+
+/* Title */
+h1, h2, p, .points {
+  margin-left: 25%;
+  margin-right: 25%;
+  text-align: left;
+  color: #c7c7c7;
+}
+
+p, .points {
+  font-size: 20px;  
+  margin: 0 25%;
+  word-wrap: break-word;
+}
+
+
+/* For smaller screens change card style to vertical */
+@media (max-width: 600px) {
+
+}
+
+/* Footer styles */
+.footer {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 100px;
+}
+
+.footer p {
+  text-align: center;
+  margin: 0;
+}
+
