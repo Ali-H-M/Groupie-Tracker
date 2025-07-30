@@ -47,7 +47,7 @@ li a:hover {
   background-color: #111;
 }
 
-/* Artist Details Page - Dark Mode - Horizontal Layout */
+/* Artist Details Page */
 .artist-card {
   max-width: 1000px;
   margin: 2rem auto;
@@ -92,7 +92,6 @@ li a:hover {
   opacity: 1; /* Ensure the image is visible */
 }
 
-/* Remove the hover effect for better visibility */
 .artist-image:hover {
   transform: scale(1.05);
   filter: brightness(1.1);
@@ -115,6 +114,35 @@ li a:hover {
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
   letter-spacing: -0.02em;
   line-height: 1.1;
+}
+
+@media (max-width: 768px) {
+  .artist-card {
+    margin: 1rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .artist-card {
+    margin: 1rem;
+    padding: 0 0.5rem;
+  }
+
+  .artist-header {
+    padding: 1rem;
+    margin: 0 -1rem 1.5rem -1rem;
+  }
+
+  .artist-image-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+  }
+
+  .artist-name {
+    font-size: 1.5rem;
+  }
 }
 
 .artist-members {
