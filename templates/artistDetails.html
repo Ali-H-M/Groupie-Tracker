@@ -45,7 +45,15 @@
                 <div class="tour-list">
                     {{range $location, $dates := .Relation.DatesLocations}}
                     <div class="tour-location">
-                        <h3 class="location-name">{{$location}}</h3>
+
+                        <a href="/location?place={{$location}}" title="Open in Google Maps"
+                            style="text-decoration: none;" target="_blank" rel="noopener noreferrer">
+                            <h3 class=" location-name" style="display: inline-block;">{{$location}}</h3>
+                            <img src="../static/4920222.png"
+                                style="width: 20px; height: 20px; float: right; object-fit: contain;">
+                        </a>
+
+
                         <ul class="dates-list">
                             {{range $dates}}
                             <li class="date-item">{{.}}</li>

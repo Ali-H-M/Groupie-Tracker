@@ -47,7 +47,7 @@ li a:hover {
   background-color: #111;
 }
 
-/* Artist Details Page */
+/* Artist Details */
 .artist-card {
   max-width: 1000px;
   margin: 2rem auto;
@@ -92,6 +92,7 @@ li a:hover {
   opacity: 1; /* Ensure the image is visible */
 }
 
+/* Remove the hover effect for better visibility */
 .artist-image:hover {
   transform: scale(1.05);
   filter: brightness(1.1);

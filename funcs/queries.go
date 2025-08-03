@@ -3,6 +3,7 @@ package funcs
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -60,6 +61,11 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 	filtered = FilterArtists(filtered, ExcludeIDs)
 	data.Artist = filtered
 
+	// Auto Complete logic
+	artistsCopy := FilterArtists(artists, ExcludeIDs)
+	suggestions := AutoComplete(artistsCopy)
+	data.Suggestions = suggestions
+
 	RenderTemplate(w, "index.html", data)
 }
 
@@ -76,4 +82,54 @@ func HandleQueries(w http.ResponseWriter, r *http.Request) {
 	}
 
 	Handler(w, r) // No searchQuary param at all: (load normal home page)
+}
+
+func Pagentation(r *http.Request, items []Artists, itemsPerPage int) (PageData, bool) {
+	pageStr := r.URL.Query().Get("page")
+	page := 1
+
+	if pageStr != "" {
+		p, err := strconv.Atoi(pageStr)
+		if err != nil || p < 1 {
+			return PageData{}, false // invalid query
+		}
+		page = p
+	}
+
+	totalItems := len(items)
+	totalPages := (totalItems + itemsPerPage - 1) / itemsPerPage
+
+	if page > totalPages {
+		return PageData{}, false // page not found
+	}
+
+	start := (page - 1) * itemsPerPage // Calculate the first item (index) in the page
+	end := start + itemsPerPage
+	if end > totalItems { // When cant fill the hole page
+		end = totalItems
+	}
+
+	return PageData{
+		Artist:     items[start:end],
+		Page:       page,
+		TotalPages: totalPages,
+		HasNext:    page < totalPages,
+		HasPrev:    page > 1,
+		NextPage:   page + 1,
+		PrevPage:   page - 1,
+	}, true
+}
+
+func AutoComplete(filtered []Artists) []Suggestion {
+	var suggestions []Suggestion
+	for _, art := range filtered {
+		suggestions = append(suggestions, Suggestion{Value: art.Name, Label: art.Name + " - Name"})
+		suggestions = append(suggestions, Suggestion{Value: strconv.Itoa(art.CreationDate), Label: strconv.Itoa(art.CreationDate) + " - Creation Date"})
+		suggestions = append(suggestions, Suggestion{Value: art.FirstAlbum, Label: art.FirstAlbum + " - First Album"})
+
+		for _, m := range art.Members {
+			suggestions = append(suggestions, Suggestion{Value: m, Label: m + " - Member"})
+		}
+	}
+	return suggestions
 }
