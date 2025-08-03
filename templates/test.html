@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <h1>Location Details</h1>
+    <ul>
+        <li><strong>Name:</strong> {{.Name}}</li>
+        <li><strong>Display Name:</strong> {{.Display_Name}}</li>
+        <li><strong>Latitude:</strong> {{.Lat}}</li>
+        <li><strong>Longitude:</strong> {{.Lon}}</li>
+    </ul>
+
+    <p>
+        <a href="https://www.openstreetmap.org/?mlat={{.Lat}}&mlon={{.Lon}}&zoom=15" target="_blank">
+            View on OpenStreetMap
+        </a>
+    </p>
+</body>
+
+</html>

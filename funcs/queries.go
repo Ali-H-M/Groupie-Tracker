@@ -1,0 +1,135 @@
+package funcs
+
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+	"strings"
+)
+
+func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.NotFound(w, r)
+		return
+	}
+
+	// Fetch all artists
+	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+	if err != nil {
+		http.Error(w, "Failed to fetch artists", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	var artists []Artists
+	if err := json.NewDecoder(resp.Body).Decode(&artists); err != nil {
+		http.Error(w, "Failed to parse artist data", http.StatusInternalServerError)
+		return
+	}
+
+	// Take form relations API
+	locResp, err := http.Get("https://groupietrackers.herokuapp.com/api/locations")
+	if err != nil || locResp.StatusCode != http.StatusOK {
+		w.WriteHeader(http.StatusNotFound)
+		RenderTemplate(w, "error.html", nil)
+		return
+	}
+	defer locResp.Body.Close()
+
+	var location Locations
+	if err := json.NewDecoder(locResp.Body).Decode(&location); err != nil {
+		http.Error(w, "Failed to fetch Locations", http.StatusInternalServerError)
+		return
+	}
+
+	data := PageData{
+		Artist:   artists,
+		Location: location,
+	}
+
+	// Get search query from URL
+	query := r.URL.Query().Get("searchQuary")
+	// Call search function
+	filtered := SearchArtists(query, data)
+
+	// When nothing match user quary search
+	if len(filtered) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	// Remove unwanted objects
+	filtered = FilterArtists(filtered, ExcludeIDs)
+	data.Artist = filtered
+
+	// Auto Complete logic
+	artistsCopy := FilterArtists(artists, ExcludeIDs)
+	suggestions := AutoComplete(artistsCopy)
+	data.Suggestions = suggestions
+
+	RenderTemplate(w, "index.html", data)
+}
+
+func HandleQueries(w http.ResponseWriter, r *http.Request) {
+	// Check for searchQuery URL parameter
+	query, ok := r.URL.Query()["searchQuary"]
+	if ok && len(query) > 0 && strings.TrimSpace(query[0]) != "" {
+		ArtistSearchHandler(w, r) //  Valid query
+		return
+	} else if ok && len(query) > 0 && strings.TrimSpace(query[0]) == "" {
+		w.WriteHeader(http.StatusBadRequest) // searchQuary is present but empty
+		Handler(w, r)
+		return
+	}
+
+	Handler(w, r) // No searchQuary param at all: (load normal home page)
+}
+
+func Pagentation(r *http.Request, items []Artists, itemsPerPage int) (PageData, bool) {
+	pageStr := r.URL.Query().Get("page")
+	page := 1
+
+	if pageStr != "" {
+		p, err := strconv.Atoi(pageStr)
+		if err != nil || p < 1 {
+			return PageData{}, false // invalid query
+		}
+		page = p
+	}
+
+	totalItems := len(items)
+	totalPages := (totalItems + itemsPerPage - 1) / itemsPerPage
+
+	if page > totalPages {
+		return PageData{}, false // page not found
+	}
+
+	start := (page - 1) * itemsPerPage // Calculate the first item (index) in the page
+	end := start + itemsPerPage
+	if end > totalItems { // When cant fill the hole page
+		end = totalItems
+	}
+
+	return PageData{
+		Artist:     items[start:end],
+		Page:       page,
+		TotalPages: totalPages,
+		HasNext:    page < totalPages,
+		HasPrev:    page > 1,
+		NextPage:   page + 1,
+		PrevPage:   page - 1,
+	}, true
+}
+
+func AutoComplete(filtered []Artists) []Suggestion {
+	var suggestions []Suggestion
+	for _, art := range filtered {
+		suggestions = append(suggestions, Suggestion{Value: art.Name, Label: art.Name + " - Name"})
+		suggestions = append(suggestions, Suggestion{Value: strconv.Itoa(art.CreationDate), Label: strconv.Itoa(art.CreationDate) + " - Creation Date"})
+		suggestions = append(suggestions, Suggestion{Value: art.FirstAlbum, Label: art.FirstAlbum + " - First Album"})
+
+		for _, m := range art.Members {
+			suggestions = append(suggestions, Suggestion{Value: m, Label: m + " - Member"})
+		}
+	}
+	return suggestions
+}

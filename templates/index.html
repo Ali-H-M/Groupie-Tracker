@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Groupie-Tracker</title>
+</head>
+
+<body>
+    <div class="main-content">
+
+        <nav>
+            <a class="homenav" href="/">Home</a>
+            <ul>
+                <li><a href="#">Item 1</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Item 3</a></li>
+            </ul>
+        </nav>
+
+        <h1>Home Page</h1>
+
+        <form action="/" method="GET">
+            <div class="search">
+                <input type="text" name="searchQuary" placeholder="Search artist.." list="autocomplete" />
+                <datalist id="autocomplete">
+                    {{range .Suggestions}}
+                    <option value="{{.Value}}" label="{{.Label}}">
+                        {{end}}
+                </datalist>
+
+                <button type="submit" class="submit-btn">Search</button>
+                <a href="/" class="reset-btn">Reset</a>
+            </div>
+        </form>
+
+        {{if .Artist}}
+        <div class="cards-container">
+            {{range .Artist}}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{.Image}}" loading="lazy" />
+                </div>
+
+                <div class="card-info">
+                    <div class="field"><label>Name:</label><span>{{.Name}}</span></div>
+                    <div class="field"><label>Members:</label><span> {{join .Members ", "}}</span></div>
+                    <div class="field"><label>Creation Date:</label><span>{{.CreationDate}}</span></div>
+                    <div class="field"><label>First Album:</label><span>{{.FirstAlbum}}</span></div>
+                    <a href="/artists/{{.ID}}" class="location-details-btn">Location Details</a>
+                </div>
+            </div>
+            {{end}}
+        </div>
+
+        {{else}} <!-- If (result slice) is empty -->
+        <p class="no-result-title" style="text-align: center; font-weight: bold;">No results found</p>
+        {{end}}
+    </div>
+
+    <!-- pagentation logic -->
+    <div class="pagination">
+        {{if .HasPrev}}
+        <a href="/?page={{.PrevPage}}">&larr; Previous</a>
+        {{end}}
+
+        <span>Page {{.Page}} of {{.TotalPages}}</span>
+
+        {{if .HasNext}}
+        <a href="/?page={{.NextPage}}">Next &rarr;</a>
+        {{end}}
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
