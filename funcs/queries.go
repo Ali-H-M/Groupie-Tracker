@@ -49,21 +49,27 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get search query from URL
 	query := r.URL.Query().Get("searchQuary")
-	// Call search function
-	filtered := SearchArtists(query, data)
+	data.SearchQuery = query
+
+	// Remove unwanted objects
+	filtered := FilterArtists(data.Artist, ExcludeIDs)
+	data.Artist = filtered
 
 	// When nothing match user quary search
 	if len(filtered) == 0 {
 		w.WriteHeader(http.StatusNotFound)
 	}
 
-	// Remove unwanted objects
-	filtered = FilterArtists(filtered, ExcludeIDs)
-	data.Artist = filtered
+	// Save Auto Complete logic
+	suggestions := AutoComplete(data.Artist)
 
-	// Auto Complete logic
-	artistsCopy := FilterArtists(artists, ExcludeIDs)
-	suggestions := AutoComplete(artistsCopy)
+	// Call search function
+	data.Artist = SearchArtists(query, data)
+
+	// Apply pagentation to search result
+	data, _ = Pagentation(r, data.Artist, 16)
+
+	// Aplay autocomplete
 	data.Suggestions = suggestions
 
 	RenderTemplate(w, "index.html", data)
@@ -71,11 +77,12 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 
 func HandleQueries(w http.ResponseWriter, r *http.Request) {
 	// Check for searchQuery URL parameter
-	query, ok := r.URL.Query()["searchQuary"]
-	if ok && len(query) > 0 && strings.TrimSpace(query[0]) != "" {
+	searchQuery, ok := r.URL.Query()["searchQuary"]
+
+	if ok && len(searchQuery) > 0 && strings.TrimSpace(searchQuery[0]) != "" {
 		ArtistSearchHandler(w, r) //  Valid query
 		return
-	} else if ok && len(query) > 0 && strings.TrimSpace(query[0]) == "" {
+	} else if ok && len(searchQuery) > 0 && strings.TrimSpace(searchQuery[0]) == "" {
 		w.WriteHeader(http.StatusBadRequest) // searchQuary is present but empty
 		Handler(w, r)
 		return
@@ -109,15 +116,27 @@ func Pagentation(r *http.Request, items []Artists, itemsPerPage int) (PageData, 
 		end = totalItems
 	}
 
-	return PageData{
-		Artist:     items[start:end],
-		Page:       page,
-		TotalPages: totalPages,
-		HasNext:    page < totalPages,
-		HasPrev:    page > 1,
-		NextPage:   page + 1,
-		PrevPage:   page - 1,
-	}, true
+	data := PageData{}
+
+	// save serch query if exist {
+	if _, exists := r.URL.Query()["searchQuary"]; exists {
+		query := r.URL.Query().Get("searchQuary")
+		data.SearchQuery = query
+	}
+
+	data.Artist = items[start:end]
+	data.Page = page
+	data.TotalPages = totalPages
+	data.HasNext = page < totalPages
+	data.HasPrev = page > 1
+	data.NextPage = page + 1
+	data.PrevPage = page - 1
+
+	// Auto Complete logic
+	suggestions := AutoComplete(items)
+	data.Suggestions = suggestions
+
+	return data, true
 }
 
 func AutoComplete(filtered []Artists) []Suggestion {

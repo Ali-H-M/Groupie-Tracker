@@ -207,6 +207,18 @@ li a:hover {
   border-bottom: 1px solid #374151;
 }
 
+.heading-with-icon {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.emoji {
+  margin-left: auto;
+  padding-left: 0.5rem;
+}
+
 .dates-list {
   list-style: none;
   padding: 0;

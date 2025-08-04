@@ -48,6 +48,7 @@ type PageData struct {
 	HasPrev     bool
 	NextPage    int
 	PrevPage    int
+	SearchQuery string
 }
 
 // Allowed query parameters
