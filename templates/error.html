@@ -5,14 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/favicon.ico">
-    <title>Groupie tracker</title>
+    <link rel="stylesheet" href="/static/error.css">
+    <title>{{.ErrorName}}</title>
 </head>
 
 <body>
-    <h1 class="error-message">{{.ErrorName}}</h1>
-    {{if lt .ErrorCode 500}}
-    <a href="/" class="home-link">Go Home</a>
-    {{end}}
+    <div class="main-content">
+
+        <nav>
+            <a class="homenav" href="/">Home</a>
+            <ul>
+                <li><a href="test.html">Item 1</a></li>
+                <li><a href="about.html" class="about">About</a></li>
+                <li><a href="#">Item 3</a></li>
+            </ul>
+        </nav>
+
+        <h1>{{.ErrorName}}</h1>
+
+        {{if lt .ErrorCode 500}}
+        <a id="Home" href="/">Go back Home</a>
+        {{end}}
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 All rights reserved.</p>
+    </footer>
 </body>
 
 </html>

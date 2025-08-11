@@ -1,0 +1,98 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #111827;
+  font-family: system-ui, sans-serif;
+  background-color: #111827;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  text-align: center;
+}
+
+html,
+body {
+  /* display: flex; */
+  height: 100%;
+  overflow-x: hidden;
+  width: 100%;
+  /* flex-direction: column; Stack children vertically */
+}
+
+.main-content {
+  flex: 1; /* This makes the content area take up all available space */
+}
+
+/* Nav bar */
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
+  background-color: #1f2937;
+  border-bottom: solid 1px #374151;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+nav li {
+  padding-left: 1rem;
+}
+
+nav a {
+  padding: 3px;
+  text-decoration: none;
+  color: #bcbcbc;
+}
+
+.homenav {
+  display: grid;
+  align-items: center;
+}
+
+li a:hover {
+  background-color: #4e4b4b;
+}
+
+/* Title */
+h1 {
+  text-align: center;
+  margin: 20px 0;
+  color: #c7c7c7;
+}
+
+#Home {
+  color: white;
+  background: linear-gradient(145deg, #4ecdc4, #45b7d1);
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 50px;
+  text-decoration: none;
+  }
+
+#Home:hover {
+  background: linear-gradient(145deg, #5fd9d0, #56c5e8);
+  cursor: pointer;
+  }
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: auto;
+}
+
+.footer p {
+  margin: 0;
+}
