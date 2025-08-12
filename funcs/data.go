@@ -27,11 +27,13 @@ type ArtistDetailPage struct {
 }
 
 type Locations struct {
-	Index []struct {
-		ID        int      `json:"id"`
-		Locations []string `json:"locations"`
-		Dates     string   `json:"dates"`
-	} `json:"index"`
+  Index []LocationIndex `json:"index"`
+}
+
+type LocationIndex struct {
+    ID        int      `json:"id"`
+    Locations []string `json:"locations"`
+    Dates     string   `json:"dates"`
 }
 
 type Suggestion struct {

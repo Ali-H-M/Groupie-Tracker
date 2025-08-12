@@ -27,7 +27,7 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Take form relations API
+	// Take form locations API
 	locResp, err := http.Get("https://groupietrackers.herokuapp.com/api/locations")
 	if err != nil || locResp.StatusCode != http.StatusOK {
 		w.WriteHeader(http.StatusNotFound)
@@ -61,7 +61,7 @@ func ArtistSearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Save Auto Complete logic
-	suggestions := AutoComplete(data.Artist)
+	suggestions := AutoComplete(data.Artist, location.Index)
 
 	// Call search function
 	data.Artist = SearchArtists(query, data)
@@ -133,22 +133,33 @@ func Pagentation(r *http.Request, items []Artists, itemsPerPage int) (PageData, 
 	data.PrevPage = page - 1
 
 	// Auto Complete logic
-	suggestions := AutoComplete(items)
+	suggestions := AutoComplete(items, nil)
 	data.Suggestions = suggestions
 
 	return data, true
 }
 
-func AutoComplete(filtered []Artists) []Suggestion {
-	var suggestions []Suggestion
-	for _, art := range filtered {
-		suggestions = append(suggestions, Suggestion{Value: art.Name, Label: art.Name + " - Name"})
-		suggestions = append(suggestions, Suggestion{Value: strconv.Itoa(art.CreationDate), Label: strconv.Itoa(art.CreationDate) + " - Creation Date"})
-		suggestions = append(suggestions, Suggestion{Value: art.FirstAlbum, Label: art.FirstAlbum + " - First Album"})
 
-		for _, m := range art.Members {
-			suggestions = append(suggestions, Suggestion{Value: m, Label: m + " - Member"})
-		}
-	}
-	return suggestions
+func AutoComplete(filtered []Artists, locationIndex []LocationIndex) []Suggestion {
+    var suggestions []Suggestion
+    
+    // Add artist-related suggestions
+    for _, art := range filtered {
+        suggestions = append(suggestions, Suggestion{Value: art.Name, Label: art.Name + " - Brand Name"})
+        suggestions = append(suggestions, Suggestion{Value: strconv.Itoa(art.CreationDate), Label: strconv.Itoa(art.CreationDate) + " - Creation Date"})
+        suggestions = append(suggestions, Suggestion{Value: art.FirstAlbum, Label: art.FirstAlbum + " - First Album"})
+       
+        for _, m := range art.Members {
+            suggestions = append(suggestions, Suggestion{Value: m, Label: m + " - Member"})
+        }
+    }
+   
+    // Add location suggestions
+    for _, indexItem := range locationIndex {
+        for _, location := range indexItem.Locations {
+            suggestions = append(suggestions, Suggestion{Value: location, Label: location + " - Location"})
+        }
+    }
+    
+    return suggestions
 }

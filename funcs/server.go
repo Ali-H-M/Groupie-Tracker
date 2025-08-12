@@ -29,6 +29,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Take form locations API , (needed for location Auto complete)
+	locResp, err := http.Get("https://groupietrackers.herokuapp.com/api/locations")
+	if err != nil || locResp.StatusCode != http.StatusOK {
+		w.WriteHeader(http.StatusNotFound)
+		RenderTemplate(w, "error.html", nil)
+		return
+	}
+	defer locResp.Body.Close()
+
+	var location Locations
+	if err := json.NewDecoder(locResp.Body).Decode(&location); err != nil {
+		http.Error(w, "Failed to fetch Locations", http.StatusInternalServerError)
+		return
+	}
+
 	filtered := FilterArtists(apiData, ExcludeIDs)
 
 	// Pagentation Logic
@@ -40,7 +55,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Auto Complete logic
-	suggestions := AutoComplete(filtered)
+	suggestions := AutoComplete(filtered, location.Index)
 	homeData.Suggestions = suggestions
 
 	RenderTemplate(w, "index.html", homeData)
