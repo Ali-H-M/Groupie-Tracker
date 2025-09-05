@@ -15,16 +15,20 @@
         <nav>
             <a class="homenav" href="/">Home</a>
             <ul>
-                <li><a href="#">Item 1</a></li>
                 <li><a href="about.html">About</a></li>
-                <li><a href="#">Item 3</a></li>
             </ul>
         </nav>
 
         <h1>Home Page</h1>
 
-        <form action="/" method="GET">
+        <form action="/" method="GET" class="search-bar-form">
             <div class="search">
+                <!-- Toggle button inside first form -->
+                <input type="checkbox" id="toggle-filter">
+                <label for="toggle-filter" class="filter-toggle-btn">
+                    <img src="../static/filter2.png" alt="Toggle Filters" width="20px" height="20px">
+                </label>
+
                 <input type="text" name="searchQuary" placeholder="Search artist.." list="autocomplete"
                     autocomplete="off" />
                 <datalist id="autocomplete">
@@ -35,6 +39,66 @@
 
                 <button type="submit" class="submit-btn">Search</button>
                 <a href="/" class="reset-btn">Reset</a>
+            </div>
+        </form>
+
+
+        <!-- Filter form -->
+        <form id="filter" action="/" method="GET">
+            <input type="hidden" name="filterQuerys" value="true">
+
+            <div class="form-group">
+                <label for="creationDateStart">Creation Date start:</label>
+                <input type="number" id="creationDateStart" name="creationDateStart" placeholder="Creation year start"
+                    autocomplete="off" />
+                <span title="Only this give the exact year artists">ℹ️</span>
+            </div>
+
+            <div class="form-group">
+                <label for="creationDateEnd">Creation Date end:</label>
+                <input type="number" id="creationDateEnd" name="creationDateEnd" placeholder="Creation year end"
+                    autocomplete="off" />
+                <span title="Only this give artists till this year">ℹ️</span>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <label for="firstAlbumStart">First Album start:</label>
+                <input type="date" id="firstAlbumStart" name="firstAlbumStart" placeholder="First album start"
+                    autocomplete="off" />
+                <span title="Only this give the exact date artists">ℹ️</span>
+            </div>
+
+            <div class="form-group">
+                <label for="firstAlbumEnd">First Album end:</label>
+                <input type="date" id="firstAlbumEnd" name="firstAlbumEnd" placeholder="First album end"
+                    autocomplete="off" />
+                <span title="Only this give artists till this date">ℹ️</span>
+            </div>
+
+            <div class="checkbox-item">
+                <p>Number of band members: </p>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="cb1" id="cbb1" /><label for="cbb1">1</label>
+                    <input type="checkbox" name="cb2" id="cbb2" /><label for="cbb2">2</label>
+                    <input type="checkbox" name="cb3" id="cbb3" /><label for="cbb3">3</label>
+                    <input type="checkbox" name="cb4" id="cbb4" /><label for="cbb4">4</label>
+                    <input type="checkbox" name="cb5" id="cbb5" /><label for="cbb5">5</label>
+                    <input type="checkbox" name="cb6" id="cbb6" /><label for="cbb6">6</label>
+                    <input type="checkbox" name="cb7" id="cbb7" /><label for="cbb7">7</label>
+                    <input type="checkbox" name="cb8" id="cbb8" /><label for="cbb8">8</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Search by location:</label>
+                <input type="text" id="location" name="location" placeholder="Search by location" autocomplete="off" />
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" class="filters-submit-btn">Submit</button>
+                <a href="/" class="filters-reset-btn">Reset</a>
             </div>
         </form>
 
@@ -65,17 +129,16 @@
     <!-- pagentation logic -->
     <div class="pagination">
         {{if .HasPrev}}
-        <a href="/?{{if .SearchQuery}}searchQuary={{.SearchQuery}}&{{end}}page={{.PrevPage}}">&larr; Previous</a>
-
+        <a href="{{.PrevPageURL}}">&larr; Previous</a>
         {{end}}
 
         <span>Page {{.Page}} of {{.TotalPages}}</span>
 
         {{if .HasNext}}
-        <a href="/?{{if .SearchQuery}}searchQuary={{.SearchQuery}}&{{end}}page={{.NextPage}}">Next &rarr;</a>
-
+        <a href="{{.NextPageURL}}">Next &rarr;</a>
         {{end}}
     </div>
+
 
     <footer class="footer">
         <p>&copy; 2025 All rights reserved.</p>

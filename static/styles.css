@@ -67,7 +67,7 @@ h1 {
 }
 
 /* Search form wrapper */
-form {
+.search-bar-form {
   width: 90%;
   max-width: 850px;
   margin: 0 auto 2rem;
@@ -146,6 +146,217 @@ form {
 .reset-btn:active {
   transform: translateY(0);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#filter {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.checkbox-item {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+#cbb1,
+#cbb2,
+#cbb3,
+#cbb4,
+#cbb5,
+#cbb6,
+#cbb7,
+#cbb8 {
+  width: 15px;
+  height: 15px;
+}
+
+p,
+label {
+  color: white;
+}
+
+#filter {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.4s ease;
+}
+
+/* show filter if toggle checked */
+#toggle-filter:checked ~ #filter,
+.main-content:has(#toggle-filter:checked) #filter {
+  max-height: 1000px;
+  opacity: 1;
+  transition: max-height 0.7s ease, opacity 0.6s ease;
+  width: 90%;
+}
+
+/* visually hide the checkbox */
+#toggle-filter {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+
+.filter-toggle-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  padding: 8px;
+  background: #dddee1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.filter-toggle-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.filter-toggle-btn img {
+  width: 20px;
+  height: 20px;
+  border-radius: 8px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.filter-toggle-btn img:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+#filter {
+  background-color: #1a2235;
+  padding: 20px;
+  margin: 15px auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  color: #f5f7fa;
+  font-size: 14px;
+  max-width: 850px;
+  text-align: center;
+}
+
+#filter .filter-pair p {
+  margin: 0;
+  font-weight: 500;
+  color: #d1d5db;
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+#filter input[type="text"],
+#filter input[type="number"],
+#filter input[type="date"] {
+  width: 280px;
+  padding: 8px 10px;
+  border: 1px solid #2c3650;
+  border-radius: 6px;
+  background-color: #0f172a;
+  color: #f5f7fa;
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+  min-width: 300px;
+}
+
+#filter input:focus {
+  border-color: #3b82f6;
+}
+
+#filter .checkbox-item {
+  margin: 15px 0;
+  text-align: center;
+}
+#filter .checkbox-item label {
+  margin: 0 8px;
+  color: #f5f7fa;
+  cursor: pointer;
+}
+
+#filter .checkbox-item p {
+  font-weight: 500;
+}
+
+#filter input[type="checkbox"] {
+  accent-color: #3b82f6;
+  margin-right: 4px;
+}
+
+#filter .filters-submit-btn,
+#filter .filters-reset-btn {
+  margin-top: 25px;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#filter .filters-submit-btn {
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  margin-right: 10px;
+}
+#filter .filters-submit-btn:hover {
+  background-color: #2563eb;
+}
+
+#filter .filters-reset-btn {
+  background-color: #ef4444;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+}
+#filter .filters-reset-btn:hover {
+  background-color: #dc2626;
+}
+
+#filter span[title] {
+  margin-left: 6px;
+  cursor: help;
+  color: #3b82f6;
+}
+
+.filter-location-input {
+  margin: 10px auto;
+  display: block;
+  text-align: center;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-group label {
+  font-weight: bold;
+  white-space: nowrap;
+  min-width: 140px;
+  text-align: right;
+}
+
+.form-group input {
+  width: 180px !important;
+  margin: 0 !important;
+}
+
+.form-group span[title] {
+  margin-left: 4px;
 }
 
 /* Cards Styles */

@@ -1,7 +1,6 @@
 package funcs
 
 import (
-	"encoding/json"
 	"html/template"
 	"net/http"
 	"strings"
@@ -14,40 +13,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Call the API
-	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+	ArtistsAPIData, err := FetchAPI(w, r)
 	if err != nil {
-		http.Error(w, "Failed to get API data", http.StatusInternalServerError)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Decode the JSON into struct
-	var apiData []Artists
-	if err := json.NewDecoder(resp.Body).Decode(&apiData); err != nil {
-		http.Error(w, "Failed to parse API response", http.StatusInternalServerError)
 		return
 	}
 
-	// Take form locations API , (needed for location Auto complete)
-	locResp, err := http.Get("https://groupietrackers.herokuapp.com/api/locations")
-	if err != nil || locResp.StatusCode != http.StatusOK {
-		w.WriteHeader(http.StatusNotFound)
-		RenderTemplate(w, "error.html", nil)
-		return
-	}
-	defer locResp.Body.Close()
-
-	var location Locations
-	if err := json.NewDecoder(locResp.Body).Decode(&location); err != nil {
-		http.Error(w, "Failed to fetch Locations", http.StatusInternalServerError)
+	erro := r.ParseForm()
+	if erro != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		RenderTemplate(w, "Error parsing form", BadRequest)
 		return
 	}
 
-	filtered := FilterArtists(apiData, ExcludeIDs)
+	homeData := PageData{
+		Artist: ArtistsAPIData.Artist,
+	}
 
 	// Pagentation Logic
-	homeData, ok := Pagentation(r, filtered, Items_Per_Page)
+	homeData, ok := Pagentation(r, ArtistsAPIData.Artist, Items_Per_Page)
+
 	if !ok { // Invalid page number
 		w.WriteHeader(http.StatusNotFound)
 		RenderTemplate(w, "error.html", ErrorData{ErrorName: "404 Page not found", ErrorCode: 404})
@@ -55,7 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Auto Complete logic
-	suggestions := AutoComplete(filtered, location.Index)
+	suggestions := AutoComplete(ArtistsAPIData.Artist, ArtistsAPIData.Location.Index)
 	homeData.Suggestions = suggestions
 
 	RenderTemplate(w, "index.html", homeData)
@@ -76,7 +60,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if query parameters is allowed
-	for key := range r.URL.Query() {
+	for key := range queryParams {
 		if !validQueries[key] {
 			w.WriteHeader(http.StatusBadRequest)
 			RenderTemplate(w, "error.html", ErrorData{ErrorName: "400 Bad Request", ErrorCode: 400})
@@ -85,7 +69,19 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Handle search queries if they exist
-	HandleQueries(w, r)
+	for key := range queryParams {
+		switch key {
+		case "searchQuary":
+			HandleMainSearchQuerie(w, r)
+			return
+		case "filterQuerys":
+			HandlerFilltersQuerie(w, r)
+			return // RETURN to prevent multiple handlers
+		}
+	}
+
+	// If no handler matched, go to default
+	Handler(w, r)
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
@@ -96,18 +92,26 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
 
 	t, err := template.New(tmpl).Funcs(joinMembersList).ParseFiles("templates/" + tmpl)
 	if err != nil {
-		// Render custom 404 page
+		// Render custom error page
 		w.WriteHeader(http.StatusInternalServerError)
-		t404, _ := template.ParseFiles("templates/error.html")
-		t404.Execute(w, ErrorData{ErrorName: "500 Internal Server Error", ErrorCode: 500})
+		tError, _ := template.ParseFiles("templates/error.html")
+		if tError != nil {
+			tError.Execute(w, InternalServerError)
+		} else {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	}
 	err = t.Execute(w, data)
 	if err != nil {
 		// Template execution error
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusInternalServerError)
 		t500, _ := template.ParseFiles("templates/error.html")
-		t500.Execute(w, ErrorData{ErrorName: "404 Page not found", ErrorCode: 400})
+		if t500 != nil {
+			t500.Execute(w, InternalServerError)
+		} else {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	}
 }

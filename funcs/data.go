@@ -27,13 +27,13 @@ type ArtistDetailPage struct {
 }
 
 type Locations struct {
-  Index []LocationIndex `json:"index"`
+	Index []LocationIndex `json:"index"`
 }
 
 type LocationIndex struct {
-    ID        int      `json:"id"`
-    Locations []string `json:"locations"`
-    Dates     string   `json:"dates"`
+	ID        int      `json:"id"`
+	Locations []string `json:"locations"`
+	Dates     string   `json:"dates"`
 }
 
 type Suggestion struct {
@@ -51,13 +51,34 @@ type PageData struct {
 	NextPage    int
 	PrevPage    int
 	SearchQuery string
+	NextPageURL string
+	PrevPageURL string
+}
+
+type FilltersData struct {
+	Artist   []Artists
+	Location Locations
 }
 
 // Allowed query parameters
 var validQueries = map[string]bool{
-	"searchQuary": true,
-	"page":        true,
-	"place":       true,
+	"searchQuary":       true,
+	"page":              true,
+	"place":             true,
+	"filterQuerys":      true,
+	"creationDateStart": true,
+	"creationDateEnd":   true,
+	"firstAlbumStart":   true,
+	"firstAlbumEnd":     true,
+	"cb1":               true,
+	"cb2":               true,
+	"cb3":               true,
+	"cb4":               true,
+	"cb5":               true,
+	"cb6":               true,
+	"cb7":               true,
+	"cb8":               true,
+	"location":          true,
 }
 
 type ErrorData struct {
@@ -71,4 +92,44 @@ type LocationCodrds struct {
 	Lon          string `json:"lon"`
 	Name         string `json:"name"`
 	Display_Name string `json:"display_name"`
+}
+
+var NotFound = struct {
+	Code    string
+	Title   string
+	Message string
+}{
+	Code:    "404",
+	Title:   "Page not found",
+	Message: "Sorry, this page was not found",
+}
+
+var BadRequest = struct {
+	Code    string
+	Title   string
+	Message string
+}{
+	Code:    "400",
+	Title:   "Bad Request",
+	Message: "Sorry, Bad request.",
+}
+
+var MethodNotAllowed = struct {
+	Code    string
+	Title   string
+	Message string
+}{
+	Code:    "405",
+	Title:   "Method Not Allowed",
+	Message: "Sorry, This method is not allowed.",
+}
+
+var InternalServerError = struct {
+	Code    string
+	Title   string
+	Message string
+}{
+	Code:    "500",
+	Title:   "Internal Error",
+	Message: "Zzz, Internal Server Error.",
 }
